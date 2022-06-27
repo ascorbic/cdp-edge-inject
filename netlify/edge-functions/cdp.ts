@@ -2,7 +2,7 @@ import { Context } from 'netlify:edge'
 
 import deploy from '../../.netlify/deploy.json' assert { type: 'json' }
 
-import { HTMLRewriter } from 'https://deno.land/x/html_rewriter/index.ts'
+import { HTMLRewriter } from 'https://deno.land/x/html_rewriter@v0.1.0-pre.17/index.ts'
 
 const { DEPLOY_ID, SITE_ID, DEPLOY_URL, VCS, CONTEXT, DEPLOY_PRIME_URL } =
   deploy
