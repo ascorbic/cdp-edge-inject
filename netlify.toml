@@ -1,0 +1,14 @@
+[build]
+publish = "public"
+
+[[plugins]]
+package = "./local-plugin"
+
+[[redirects]]
+from = "/dynamic"
+to = "/.netlify/functions/dynamic"
+status = 200
+
+[[edge_functions]]
+path = "/*"
+function = "cdp"
