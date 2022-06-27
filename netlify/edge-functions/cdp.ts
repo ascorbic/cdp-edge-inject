@@ -10,19 +10,28 @@ const { DEPLOY_ID, SITE_ID, DEPLOY_URL, VCS, CONTEXT, DEPLOY_PRIME_URL } =
 const DEPLOY_PREVIEW_HOSTNAME = new URL(DEPLOY_PRIME_URL).hostname
 
 const snippet = `
-<div data-netlify-deploy-id="${DEPLOY_ID}" data-netlify-site-id="${SITE_ID}" data-vcs="${VCS}" style="position:fixed">
+<div data-netlify-deploy-id="${DEPLOY_ID}" data-netlify-site-id="${SITE_ID}" data-vcs="${VCS}" data-edge-added style="position:fixed">
 <!-- This div is inserted by Netlify Edge Functions for all Deploy Preview URLs. -->
 <!-- To view this deployment's commit permalink, visit ${DEPLOY_URL} -->
 <script async src="https://netlify-cdp-loader.netlify.app/netlify.js"></script>
 </div>`
 
-const rewriter = new HTMLRewriter().on('body', {
-  element(element) {
-    element.onEndTag((endTag) => {
-      endTag.before(snippet, { html: true })
-    })
-  },
-})
+const rewriter = new HTMLRewriter()
+  .on('body', {
+    element(element) {
+      element.onEndTag((endTag) => {
+        endTag.before(snippet, { html: true })
+      })
+    },
+  })
+  .on('div[data-netlify-deploy-id]', {
+    element(element) {
+      // Remove it unless it was added by us
+      if (!element.hasAttribute('data-edge-added')) {
+        element.remove()
+      }
+    },
+  })
 
 export default async function handler(request: Request, { next }: Context) {
   if (
